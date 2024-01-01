@@ -1,0 +1,79 @@
+{
+    "tables": [
+        {
+            "name": "Todo",
+            "columns": [
+                {
+                    "name": "title",
+                    "type": "string",
+                    "notNull": true,
+                    "defaultValue": ""
+                },
+                {
+                    "name": "description",
+                    "type": "string",
+                    "notNull": true,
+                    "defaultValue": ""
+                },
+                {
+                    "name": "isCompleted",
+                    "type": "bool",
+                    "notNull": true,
+                    "defaultValue": "false"
+                },
+                {
+                    "name": "boardId",
+                    "type": "link",
+                    "link": {
+                        "table": "Board"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Board",
+            "columns": [
+                {
+                    "name": "title",
+                    "type": "string",
+                    "notNull": true,
+                    "defaultValue": ""
+                },
+                {
+                    "name": "imageThumbUrl",
+                    "type": "string"
+                },
+                {
+                    "name": "imageFullUrl",
+                    "type": "string"
+                },
+                {
+                    "name": "imageUserName",
+                    "type": "string"
+                },
+                {
+                    "name": "imageLinkHTML",
+                    "type": "string"
+                },
+                {
+                    "name": "owner",
+                    "type": "link",
+                    "link": {
+                        "table": "User"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "User",
+            "columns": [
+                {
+                    "name": "userId",
+                    "type": "string",
+                    "notNull": true,
+                    "defaultValue": ""
+                }
+            ]
+        }
+    ]
+}
