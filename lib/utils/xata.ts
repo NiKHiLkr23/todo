@@ -25,7 +25,8 @@ const tables = [
       },
       { name: "title", type: "string", notNull: true, defaultValue: "" },
       { name: "description", type: "string", notNull: true, defaultValue: "" },
-      { name: "boardId", type: "link", link: { table: "Board" } },
+      { name: "list", type: "link", link: { table: "List" } },
+      { name: "order", type: "int" },
     ],
   },
   {
@@ -38,7 +39,17 @@ const tables = [
       { name: "imageLinkHTML", type: "string" },
       { name: "owner", type: "link", link: { table: "User" } },
     ],
-    revLinks: [{ column: "boardId", table: "Todo" }],
+    revLinks: [{ column: "board", table: "List" }],
+  },
+  {
+    name: "List",
+    columns: [
+      { name: "title", type: "string", notNull: true, defaultValue: "" },
+      { name: "description", type: "string", notNull: true, defaultValue: "" },
+      { name: "board", type: "link", link: { table: "Board" } },
+      { name: "order", type: "int" },
+    ],
+    revLinks: [{ column: "list", table: "Todo" }],
   },
 ] as const;
 
@@ -54,10 +65,14 @@ export type TodoRecord = Todo & XataRecord;
 export type Board = InferredTypes["Board"];
 export type BoardRecord = Board & XataRecord;
 
+export type List = InferredTypes["List"];
+export type ListRecord = List & XataRecord;
+
 export type DatabaseSchema = {
   User: UserRecord;
   Todo: TodoRecord;
   Board: BoardRecord;
+  List: ListRecord;
 };
 
 const DatabaseClient = buildClient();

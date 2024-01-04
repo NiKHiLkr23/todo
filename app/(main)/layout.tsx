@@ -28,7 +28,7 @@ export default function MainLayout({
     >
       <Toaster />
       <NavBar />
-      <div className="flex flex-col items-center justify-start min-h-screen w-full    ">
+      <div className="flex flex-col items-center justify-start min-h-screen w-full   ">
         {children}
       </div>
       {/* <Footer /> */}

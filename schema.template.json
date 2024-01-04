@@ -16,13 +16,45 @@
                     "defaultValue": ""
                 },
                 {
+                    "name": "order",
+                    "type": "int"
+                },
+                {
                     "name": "isCompleted",
                     "type": "bool",
                     "notNull": true,
                     "defaultValue": "false"
                 },
                 {
-                    "name": "boardId",
+                    "name": "list",
+                    "type": "link",
+                    "link": {
+                        "table": "List"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "List",
+            "columns": [
+                {
+                    "name": "title",
+                    "type": "string",
+                    "notNull": true,
+                    "defaultValue": ""
+                },
+                {
+                    "name": "description",
+                    "type": "string",
+                    "notNull": true,
+                    "defaultValue": ""
+                },
+                {
+                    "name": "order",
+                    "type": "int"
+                },
+                {
+                    "name": "board",
                     "type": "link",
                     "link": {
                         "table": "Board"

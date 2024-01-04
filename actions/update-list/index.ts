@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import { createSafeAction } from "@/lib/create-safe-action";
 
-import { UpdateBoard } from "./schema";
+import { UpdateList } from "./schema";
 import { InputType, ReturnType } from "./types";
 import { getXataClient } from "@/lib/utils/xata";
 
@@ -19,19 +19,18 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     };
   }
 
-  const { title, id } = data;
-  let board;
-  const owner = await xata.db.User.search(userId);
+  const { title, id, boardId } = data;
+  let list;
   try {
-    const existingRecord = await xata.db.Board.filter({
-      owner: owner.records[0].id,
+    const existingRecord = await xata.db.List.filter({
+      board: boardId,
       id: id,
     }).getFirst();
     if (!existingRecord) {
       console.log("error");
     }
     try {
-      await xata.db.Board.update(id, { title: title });
+      list = await xata.db.List.update(id, { title: title });
     } catch (error) {
       console.log(error);
     }
@@ -47,8 +46,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     };
   }
 
-  revalidatePath(`/board/${id}`);
-  return { data: board };
+  revalidatePath(`/board/${boardId}`);
+  return { data: JSON.parse(JSON.stringify(list)) };
 };
 
-export const updateBoard = createSafeAction(UpdateBoard, handler);
+export const updateList = createSafeAction(UpdateList, handler);

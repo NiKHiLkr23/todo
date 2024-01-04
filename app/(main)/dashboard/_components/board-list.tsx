@@ -2,13 +2,23 @@ import { FormPopover } from "@/components/form/form-popover";
 import { Hint } from "@/components/hint";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getXataClient } from "@/lib/utils/xata";
+import { auth } from "@clerk/nextjs";
 import { HelpCircle, User2 } from "lucide-react";
 import Link from "next/link";
 
 export const BoardList = async () => {
-  const xata = getXataClient();
+  const { userId } = auth();
+  const xataClient = getXataClient();
+  let boards;
+  try {
+    const owner = await xataClient.db.User.search(`${userId}`);
+    boards = await xataClient.db.Board.filter({
+      owner: owner.records[0].id,
+    }).getMany();
+  } catch (error) {
+    console.log(error);
+  }
 
-  const boards = await xata.db.Board.getMany();
   return (
     <div className="space-y-4">
       <div className="flex items-center font-semibold text-lg text-neutral-700">
@@ -16,7 +26,7 @@ export const BoardList = async () => {
         Your boards
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {boards.map((board) => (
+        {boards?.map((board) => (
           <Link
             key={board.id}
             href={`/dashboard/${board.id}`}

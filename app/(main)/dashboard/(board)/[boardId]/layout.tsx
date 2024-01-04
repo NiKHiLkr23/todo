@@ -1,7 +1,7 @@
 import { getXataClient } from "@/lib/utils/xata";
 import { auth } from "@clerk/nextjs";
 import { notFound, redirect } from "next/navigation";
-import { BoardNavbar } from "../_components/board-navbar";
+import { BoardNavbar } from "./_components/board-navbar";
 
 export async function generateMetadata({
   params,
@@ -51,13 +51,29 @@ const BoardIdLayout = async ({
 
   return (
     <div
-      className="relative h-full bg-no-repeat bg-cover bg-center bg-green-100 w-full"
-      style={{ backgroundImage: `url(${board.imageFullUrl})` }}
+      className="relative h-full bg-no-repeat bg-cover  bg-center w-full"
+      style={{
+        backgroundImage: `url(${board.imageFullUrl})`,
+      }}
     >
-      <BoardNavbar data={JSON.parse(JSON.stringify(board))} />
+      <div
+        className="z-10"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "rgba(0, 0, 0, 0.5)", // Set background color to black with 60% opacity
+        }}
+      />
+      <div className="relative w-full max-w-7xl mx-auto">
+        <BoardNavbar data={JSON.parse(JSON.stringify(board))} />
+      </div>
 
-      <div className="absolute inset-0 bg-black/10" />
-      <main className="relative pt-28 min-h-screen">{children}</main>
+      <main className="relative pt-28 min-h-screen z-10 max-w-7xl mx-auto">
+        {children}
+      </main>
     </div>
   );
 };

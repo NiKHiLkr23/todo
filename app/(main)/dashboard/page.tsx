@@ -9,10 +9,10 @@ const Dashboard = async () => {
 
   if (userId) {
     const checkUser = await xataClient.db.User.search(userId);
-    // console.log(checkUser);
+    // console.log("checkUser______", checkUser);
     if (checkUser.totalCount === 0) {
       const updateUser = await xataClient.db.User.create({ userId });
-      // console.log(updateUser);
+      // console.log("updateUser______", updateUser);
     }
   }
 
