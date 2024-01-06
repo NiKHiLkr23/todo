@@ -1,5 +1,7 @@
 import Footer from "@/components/layout/footer";
 import NavBar from "@/components/layout/navbar";
+import { ModalProvider } from "@/components/providers/modal-provider";
+import { QueryProvider } from "@/components/providers/query-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 
@@ -26,12 +28,15 @@ export default function MainLayout({
         },
       }}
     >
-      <Toaster />
-      <NavBar />
-      <div className="flex flex-col items-center justify-start min-h-screen w-full   ">
-        {children}
-      </div>
-      {/* <Footer /> */}
+      <QueryProvider>
+        <Toaster />
+        <ModalProvider />
+        <NavBar />
+        <div className="flex flex-col items-center justify-start min-h-screen w-full   ">
+          {children}
+        </div>
+        {/* <Footer /> */}
+      </QueryProvider>
     </ClerkProvider>
   );
 }

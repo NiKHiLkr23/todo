@@ -2,17 +2,16 @@
 
 import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
-
 import { createSafeAction } from "@/lib/create-safe-action";
 
-import { DeleteList } from "./schema";
 import { InputType, ReturnType } from "./types";
 import { getXataClient } from "@/lib/utils/xata";
+import { CopyTodo } from "./schema";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId } = auth();
-
   const xataClient = getXataClient();
+
   if (!userId) {
     return {
       error: "Unauthorized",
@@ -23,22 +22,29 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   let list;
 
   try {
-    list = await xataClient.db.List.delete(id);
+    const listToCopy = await xataClient.db.List.filter({
+      id: id,
+      board: boardId,
+    }).getFirst();
+
+    if (!listToCopy) {
+      return { error: "List not found" };
+    }
 
     // await createAuditLog({
     //   entityTitle: list.title,
     //   entityId: list.id,
     //   entityType: ENTITY_TYPE.LIST,
-    //   action: ACTION.DELETE,
+    //   action: ACTION.CREATE,
     // })
   } catch (error) {
     return {
-      error: "Failed to delete.",
+      error: "Failed to copy.",
     };
   }
 
   revalidatePath(`/dashboard/${boardId}`);
-  return { data: JSON.parse(JSON.stringify(list)) };
+  return { data: list };
 };
 
-export const deleteList = createSafeAction(DeleteList, handler);
+export const copyTodo = createSafeAction(CopyTodo, handler);

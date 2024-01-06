@@ -106,6 +106,43 @@
                     "defaultValue": ""
                 }
             ]
+        },
+        {
+            "name": "AuditLog",
+            "columns": [
+                {
+                    "name": "action",
+                    "type": "string"
+                },
+                {
+                    "name": "boardId",
+                    "type": "string"
+                },
+                {
+                    "name": "entityId",
+                    "type": "string"
+                },
+                {
+                    "name": "entityType",
+                    "type": "string"
+                },
+                {
+                    "name": "entityTitle",
+                    "type": "string"
+                },
+                {
+                    "name": "userId",
+                    "type": "string"
+                },
+                {
+                    "name": "userImage",
+                    "type": "string"
+                },
+                {
+                    "name": "userName",
+                    "type": "string"
+                }
+            ]
         }
     ]
 }

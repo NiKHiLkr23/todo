@@ -5,9 +5,9 @@ import { revalidatePath } from "next/cache";
 
 import { createSafeAction } from "@/lib/create-safe-action";
 
-import { UpdateList } from "./schema";
 import { InputType, ReturnType } from "./types";
 import { getXataClient } from "@/lib/utils/xata";
+import { UpdateTodo } from "./schema";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId } = auth();
@@ -50,4 +50,4 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   return { data: JSON.parse(JSON.stringify(list)) };
 };
 
-export const updateList = createSafeAction(UpdateList, handler);
+export const updateTodo = createSafeAction(UpdateTodo, handler);

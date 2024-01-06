@@ -5,9 +5,9 @@ import { revalidatePath } from "next/cache";
 
 import { createSafeAction } from "@/lib/create-safe-action";
 
-import { DeleteList } from "./schema";
 import { InputType, ReturnType } from "./types";
 import { getXataClient } from "@/lib/utils/xata";
+import { DeleteTodo } from "./schema";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId } = auth();
@@ -23,7 +23,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   let list;
 
   try {
-    list = await xataClient.db.List.delete(id);
+    list = await xataClient.db.Todo.delete(id);
 
     // await createAuditLog({
     //   entityTitle: list.title,
@@ -41,4 +41,4 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   return { data: JSON.parse(JSON.stringify(list)) };
 };
 
-export const deleteList = createSafeAction(DeleteList, handler);
+export const deleteTodo = createSafeAction(DeleteTodo, handler);

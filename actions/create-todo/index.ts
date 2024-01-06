@@ -60,7 +60,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     };
   }
 
-  revalidatePath(`/board/${boardId}`);
+  revalidatePath(`/dashboard/${boardId}`);
   return { data: JSON.parse(JSON.stringify(todo)) };
 };
 

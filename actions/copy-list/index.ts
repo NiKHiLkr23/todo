@@ -1,5 +1,4 @@
 "use server";
-
 import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
 import { createSafeAction } from "@/lib/create-safe-action";
@@ -7,6 +6,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { CopyList } from "./schema";
 import { InputType, ReturnType } from "./types";
 import { getXataClient } from "@/lib/utils/xata";
+import { createAuditLog } from "@/lib/create-audit-log";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId } = auth();
@@ -31,20 +31,35 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       return { error: "List not found" };
     }
 
-    // await createAuditLog({
-    //   entityTitle: list.title,
-    //   entityId: list.id,
-    //   entityType: ENTITY_TYPE.LIST,
-    //   action: ACTION.CREATE,
-    // })
+    const lastList = await xataClient.db.List.filter({
+      board: boardId,
+    })
+      .sort("order", "desc")
+      .getFirst();
+
+    const newOrder = lastList ? lastList.order! + 1 : 1;
+
+    list = await xataClient.db.List.create({
+      title: `${listToCopy.title} - Copy`,
+      board: boardId,
+      order: newOrder,
+    });
+
+    await createAuditLog({
+      entityTitle: listToCopy.title,
+      entityId: listToCopy.id,
+      entityType: "LIST",
+      action: "CREATE",
+      boardId: boardId,
+    });
   } catch (error) {
     return {
       error: "Failed to copy.",
     };
   }
 
-  revalidatePath(`/board/${boardId}`);
-  return { data: list };
+  revalidatePath(`/dashboard/${boardId}`);
+  return { data: JSON.parse(JSON.stringify(list)) };
 };
 
 export const copyList = createSafeAction(CopyList, handler);

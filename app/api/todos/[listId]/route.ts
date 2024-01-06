@@ -19,7 +19,7 @@ export async function GET(
       list: params.listId,
     }).getMany();
 
-    console.log(todos);
+    // console.log(todos);
 
     return NextResponse.json(todos);
   } catch (error) {

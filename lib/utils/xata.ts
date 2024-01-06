@@ -25,8 +25,8 @@ const tables = [
       },
       { name: "title", type: "string", notNull: true, defaultValue: "" },
       { name: "description", type: "string", notNull: true, defaultValue: "" },
-      { name: "list", type: "link", link: { table: "List" } },
       { name: "order", type: "int" },
+      { name: "list", type: "link", link: { table: "List" } },
     ],
   },
   {
@@ -51,6 +51,19 @@ const tables = [
     ],
     revLinks: [{ column: "list", table: "Todo" }],
   },
+  {
+    name: "AuditLog",
+    columns: [
+      { name: "action", type: "string" },
+      { name: "boardId", type: "string" },
+      { name: "entityId", type: "string" },
+      { name: "entityType", type: "string" },
+      { name: "entityTitle", type: "string" },
+      { name: "userId", type: "string" },
+      { name: "userImage", type: "string" },
+      { name: "userName", type: "string" },
+    ],
+  },
 ] as const;
 
 export type SchemaTables = typeof tables;
@@ -68,11 +81,15 @@ export type BoardRecord = Board & XataRecord;
 export type List = InferredTypes["List"];
 export type ListRecord = List & XataRecord;
 
+export type AuditLog = InferredTypes["AuditLog"];
+export type AuditLogRecord = AuditLog & XataRecord;
+
 export type DatabaseSchema = {
   User: UserRecord;
   Todo: TodoRecord;
   Board: BoardRecord;
   List: ListRecord;
+  AuditLog: AuditLogRecord;
 };
 
 const DatabaseClient = buildClient();

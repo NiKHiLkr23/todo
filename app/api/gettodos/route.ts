@@ -1,11 +1,9 @@
 import { getXataClient } from "@/lib/utils/xata";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-
-export async function GET(
-  req: Request,
-  { params }: { params: { todoId: string } }
-) {
+import { todo } from "node:test";
+import { type NextRequest } from "next/server";
+export async function GET(req: NextRequest) {
   try {
     const { userId } = auth();
     const xataClient = getXataClient();
@@ -15,12 +13,12 @@ export async function GET(
     }
 
     const todos = await xataClient.db.Todo.filter({
-      id: params.todoId,
+      list: req.nextUrl.searchParams.get("listId"),
     }).getMany();
 
-    console.log(todos);
+    console.log("getTodos----", todos);
 
-    return NextResponse.json(todos);
+    return Response.json({ todos });
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
   }
