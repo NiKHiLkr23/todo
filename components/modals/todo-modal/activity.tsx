@@ -4,9 +4,10 @@ import { ActivityIcon } from "lucide-react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { ActivityItem } from "@/components/activity-item";
+import { AuditLogRecord } from "@/lib/utils/xata";
 
 interface ActivityProps {
-  items: AuditLog[];
+  items: AuditLogRecord[];
 }
 
 export const Activity = ({ items }: ActivityProps) => {

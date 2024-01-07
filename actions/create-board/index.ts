@@ -6,6 +6,7 @@ import { InputType, ReturnType } from "./types";
 import { createSafeAction } from "@/lib/create-safe-action";
 import { CreateBoard } from "./schema";
 import { userAgent } from "next/server";
+import { createAuditLog } from "@/lib/create-audit-log";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId } = auth();
@@ -43,13 +44,21 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       imageUserName,
       imageLinkHTML,
     });
+
+    await createAuditLog({
+      entityId: board.id,
+      entityTitle: board.title,
+      entityType: "BOARD",
+      action: "CREATE",
+      boardId: board.id,
+    });
   } catch (error) {
     console.log("ERror------------", error);
     return {
       error: "Failed to create.",
     };
   }
-  console.log(board);
+  // console.log(board);
 
   revalidatePath(`/dashboard/${board.id}`);
   return { data: JSON.parse(JSON.stringify(board)) };

@@ -8,6 +8,9 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { DeleteList } from "./schema";
 import { InputType, ReturnType } from "./types";
 import { getXataClient } from "@/lib/utils/xata";
+import { createAuditLog } from "@/lib/create-audit-log";
+import { XataApiClient } from "@xata.io/client";
+import { todo } from "node:test";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId } = auth();
@@ -23,14 +26,38 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   let list;
 
   try {
+    const todos = await xataClient.db.Todo.filter({
+      list: id,
+    }).getMany();
+
+    const deletedTodos = await xataClient.db.Todo.delete(
+      todos.map((item) => {
+        return `${item.id}`;
+      })
+    );
+
     list = await xataClient.db.List.delete(id);
 
-    // await createAuditLog({
-    //   entityTitle: list.title,
-    //   entityId: list.id,
-    //   entityType: ENTITY_TYPE.LIST,
-    //   action: ACTION.DELETE,
-    // })
+    const auditLogPromises = todos.map(async (todo) => {
+      await createAuditLog({
+        entityTitle: todo?.title!,
+        entityId: todo?.id!,
+        entityType: "TODO",
+        action: "DELETE",
+        boardId: boardId,
+      });
+    });
+
+    const audits = await Promise.all([
+      ...auditLogPromises,
+      createAuditLog({
+        entityTitle: list?.title!,
+        entityId: list?.id!,
+        entityType: "LIST",
+        action: "DELETE",
+        boardId: boardId,
+      }),
+    ]);
   } catch (error) {
     return {
       error: "Failed to delete.",

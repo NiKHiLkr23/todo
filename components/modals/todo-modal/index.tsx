@@ -10,6 +10,7 @@ import { useTodoModal } from "@/lib/hooks/use-todo-modal";
 import { fetcher } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { TodoWithList } from "@/types";
+import { AuditLogRecord } from "@/lib/utils/xata";
 
 export const TodoModal = () => {
   const id = useTodoModal((state) => state.id);
@@ -21,10 +22,10 @@ export const TodoModal = () => {
     queryFn: () => fetcher(`/api/todo/${id}`),
   });
 
-  // const { data: auditLogsData } = useQuery<AuditLog[]>({
-  //   queryKey: ["todo-logs", id],
-  //   queryFn: () => fetcher(`/api/todos/${id}/logs`),
-  // });
+  const { data: auditLogsData } = useQuery<AuditLogRecord[]>({
+    queryKey: ["todo-logs", id],
+    queryFn: () => fetcher(`/api/todo/${id}/logs`),
+  });
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -38,10 +39,11 @@ export const TodoModal = () => {
               ) : (
                 <Description data={todoData} />
               )}
-              {/* {!auditLogsData
-                ? <Activity.Skeleton />
-                : <Activity items={auditLogsData} />
-              } */}
+              {!auditLogsData ? (
+                <Activity.Skeleton />
+              ) : (
+                <Activity items={auditLogsData} />
+              )}
             </div>
           </div>
           {!todoData ? <Actions.Skeleton /> : <Actions data={todoData} />}

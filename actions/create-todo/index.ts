@@ -7,6 +7,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { CreateTodo } from "./schema";
 import { InputType, ReturnType } from "./types";
 import { getXataClient } from "@/lib/utils/xata";
+import { createAuditLog } from "@/lib/create-audit-log";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId } = auth();
@@ -48,12 +49,13 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       order: newOrder,
     });
 
-    // await createAuditLog({
-    //   entityId: card.id,
-    //   entityTitle: card.title,
-    //   entityType: ENTITY_TYPE.CARD,
-    //   action: ACTION.CREATE,
-    // });
+    await createAuditLog({
+      entityId: todo.id,
+      entityTitle: todo.title,
+      entityType: "TODO",
+      action: "CREATE",
+      boardId: boardId,
+    });
   } catch (error) {
     return {
       error: "Failed to create.",

@@ -8,6 +8,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { InputType, ReturnType } from "./types";
 import { getXataClient } from "@/lib/utils/xata";
 import { DeleteTodo } from "./schema";
+import { createAuditLog } from "@/lib/create-audit-log";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId } = auth();
@@ -20,17 +21,19 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   }
 
   const { id, boardId } = data;
-  let list;
+  let todo;
 
   try {
-    list = await xataClient.db.Todo.delete(id);
+    todo = await xataClient.db.Todo.delete(id);
 
-    // await createAuditLog({
-    //   entityTitle: list.title,
-    //   entityId: list.id,
-    //   entityType: ENTITY_TYPE.LIST,
-    //   action: ACTION.DELETE,
-    // })
+    // console.log("deleted todo", todo);
+    await createAuditLog({
+      entityTitle: todo?.title!,
+      entityId: todo?.id!,
+      entityType: "TODO",
+      action: "DELETE",
+      boardId: boardId,
+    });
   } catch (error) {
     return {
       error: "Failed to delete.",
@@ -38,7 +41,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   }
 
   revalidatePath(`/dashboard/${boardId}`);
-  return { data: JSON.parse(JSON.stringify(list)) };
+  return { data: JSON.parse(JSON.stringify(todo)) };
 };
 
 export const deleteTodo = createSafeAction(DeleteTodo, handler);

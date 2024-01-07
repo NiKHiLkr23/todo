@@ -14,13 +14,11 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const todos = await xataClient.db.Todo.filter({
+    const todo = await xataClient.db.Todo.filter({
       id: params.todoId,
-    }).getMany();
+    }).getFirst();
 
-    console.log(todos);
-
-    return NextResponse.json(todos);
+    return NextResponse.json(todo);
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
   }

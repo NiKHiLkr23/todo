@@ -7,6 +7,8 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { redirect } from "next/navigation";
 import { DeleteBoard } from "./schema";
+import { deleteList } from "../delete-list";
+import { createAuditLog } from "@/lib/create-audit-log";
 
 export type State = {
   errors?: {
@@ -36,9 +38,31 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       console.log("error");
     }
     try {
-      //get all todo associated with the board
-      // await delete all the todo
-      await xata.db.Board.delete(id);
+      //get all lists associated with the board
+      const lists = await xata.db.List.filter({
+        board: id,
+      }).getMany();
+
+      // await delete all the lists
+      const listPromises = lists.map(async (list) => {
+        await deleteList({
+          id: list.id,
+          boardId: id,
+        });
+      });
+
+      const deletedLists = await Promise.all(listPromises);
+
+      //delete board
+      const deletedBoard = await xata.db.Board.delete(id);
+
+      await createAuditLog({
+        entityTitle: deletedBoard?.title!,
+        entityId: deletedBoard?.id!,
+        entityType: "BOARD",
+        action: "DELETE",
+        boardId: deletedBoard?.id!,
+      });
     } catch (error) {
       console.log(error);
     }

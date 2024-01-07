@@ -5,8 +5,9 @@ import { createSafeAction } from "@/lib/create-safe-action";
 
 import { CopyList } from "./schema";
 import { InputType, ReturnType } from "./types";
-import { getXataClient } from "@/lib/utils/xata";
+import { ListRecord, getXataClient } from "@/lib/utils/xata";
 import { createAuditLog } from "@/lib/create-audit-log";
+import { SelectedPick } from "@xata.io/client";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId } = auth();
@@ -19,7 +20,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   }
 
   const { id, boardId } = data;
-  let list;
+  let list: Readonly<SelectedPick<ListRecord, ["*"]>>;
 
   try {
     const listToCopy = await xataClient.db.List.filter({
@@ -45,13 +46,46 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       order: newOrder,
     });
 
-    await createAuditLog({
-      entityTitle: listToCopy.title,
-      entityId: listToCopy.id,
-      entityType: "LIST",
-      action: "CREATE",
-      boardId: boardId,
+    // copy all to todos
+    const todos = await xataClient.db.Todo.filter({
+      list: id,
+    }).getMany();
+
+    // console.log("todos to copy - ", todos);
+
+    const copiedTodos = await xataClient.db.Todo.create(
+      todos.map((item) => {
+        return {
+          title: item.title,
+          description: item.description,
+          order: item.order,
+          list: list.id,
+          isCompleted: item.isCompleted,
+        };
+      })
+    );
+
+    // console.log("Success");
+    const auditLogPromises = copiedTodos.map(async (todo) => {
+      await createAuditLog({
+        entityTitle: todo?.title!,
+        entityId: todo?.id!,
+        entityType: "TODO",
+        action: "CREATE",
+        boardId: boardId,
+      });
     });
+
+    const audits = await Promise.all([
+      ...auditLogPromises,
+      createAuditLog({
+        entityTitle: list?.title!,
+        entityId: list?.id!,
+        entityType: "LIST",
+        action: "CREATE",
+        boardId: boardId,
+      }),
+    ]);
   } catch (error) {
     return {
       error: "Failed to copy.",

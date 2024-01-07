@@ -8,6 +8,7 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { UpdateList } from "./schema";
 import { InputType, ReturnType } from "./types";
 import { getXataClient } from "@/lib/utils/xata";
+import { createAuditLog } from "@/lib/create-audit-log";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId } = auth();
@@ -29,17 +30,15 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     if (!existingRecord) {
       console.log("error");
     }
-    try {
-      list = await xata.db.List.update(id, { title: title });
-    } catch (error) {
-      console.log(error);
-    }
-    // await createAuditLog({
-    //   entityTitle: board.title,
-    //   entityId: board.id,
-    //   entityType: ENTITY_TYPE.BOARD,
-    //   action: ACTION.UPDATE,
-    // })
+    list = await xata.db.List.update(id, { title: title });
+
+    await createAuditLog({
+      entityTitle: list?.title!,
+      entityId: list?.id!,
+      entityType: "LIST",
+      action: "UPDATE",
+      boardId: boardId,
+    });
   } catch (error) {
     return {
       error: "Failed to update.",

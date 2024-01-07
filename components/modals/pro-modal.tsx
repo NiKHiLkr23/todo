@@ -6,21 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useProModal } from "@/lib/hooks/use-pro-modal";
+import { useAction } from "@/lib/hooks/use-action";
 
 export const ProModal = () => {
   const proModal = useProModal();
 
-  const { execute, isLoading } = useAction(stripeRedirect, {
-    onSuccess: (data) => {
-      window.location.href = data;
-    },
-    onError: (error) => {
-      toast.error(error);
-    },
-  });
+  // const { execute, isLoading } = useAction(stripeRedirect, {
+  //   onSuccess: (data) => {
+  //     window.location.href = data;
+  //   },
+  //   onError: (error) => {
+  //     toast.error(error);
+  //   },
+  // });
 
   const onClick = () => {
-    execute({});
+    // execute({});
   };
 
   return (
@@ -45,7 +46,7 @@ export const ProModal = () => {
             </ul>
           </div>
           <Button
-            disabled={isLoading}
+            // disabled={isLoading}
             onClick={onClick}
             className="w-full"
             variant="primary"

@@ -4,13 +4,14 @@ import { toast } from "sonner";
 import { ElementRef, useRef, useState } from "react";
 import { Layout } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { FormInput } from "@/components/form/form-input";
-import { TodoWithList } from "@/types";
+import { ListWithTodos, TodoWithList } from "@/types";
 import { useAction } from "@/lib/hooks/use-action";
 import { updateTodo } from "@/actions/update-todo";
+import { fetcher } from "@/lib/utils";
 
 interface HeaderProps {
   data: TodoWithList;
@@ -19,6 +20,11 @@ interface HeaderProps {
 export const Header = ({ data }: HeaderProps) => {
   const queryClient = useQueryClient();
   const params = useParams();
+
+  const { data: listData } = useQuery<ListWithTodos>({
+    queryKey: ["list", data?.list?.id!],
+    queryFn: () => fetcher(`/api/list/${data?.list?.id!}`),
+  });
 
   const { execute } = useAction(updateTodo, {
     onSuccess: (data) => {
@@ -75,7 +81,7 @@ export const Header = ({ data }: HeaderProps) => {
           />
         </form>
         <p className="text-sm text-muted-foreground">
-          in list <span className="underline">{data.list?.id}</span>
+          in list <span className="underline">{listData?.title}</span>
         </p>
       </div>
     </div>

@@ -1,11 +1,11 @@
-import { getXataClient } from "@/lib/utils/xata";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-import { todo } from "node:test";
+
+import { getXataClient } from "@/lib/utils/xata";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { listId: string } }
+  request: Request,
+  { params }: { params: { todoId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -15,13 +15,13 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const todos = await xataClient.db.Todo.filter({
-      list: params.listId,
-    }).getMany();
+    const auditLogs = await xataClient.db.AuditLog.filter({
+      entityId: params.todoId,
+    })
+      .sort("xata.createdAt", "desc")
+      .getMany();
 
-    // console.log(todos);
-
-    return NextResponse.json(todos);
+    return NextResponse.json(auditLogs);
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
   }

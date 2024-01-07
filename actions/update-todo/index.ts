@@ -8,6 +8,8 @@ import { createSafeAction } from "@/lib/create-safe-action";
 import { InputType, ReturnType } from "./types";
 import { getXataClient } from "@/lib/utils/xata";
 import { UpdateTodo } from "./schema";
+import { createAuditLog } from "@/lib/create-audit-log";
+import { Description } from "@radix-ui/react-dialog";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId } = auth();
@@ -19,27 +21,24 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     };
   }
 
-  const { title, id, boardId } = data;
-  let list;
+  const { id, boardId, ...values } = data;
+  let todo;
   try {
-    const existingRecord = await xata.db.List.filter({
-      board: boardId,
+    const existingRecord = await xata.db.Todo.filter({
       id: id,
     }).getFirst();
     if (!existingRecord) {
-      console.log("error");
+      console.log("existing record error");
     }
-    try {
-      list = await xata.db.List.update(id, { title: title });
-    } catch (error) {
-      console.log(error);
-    }
-    // await createAuditLog({
-    //   entityTitle: board.title,
-    //   entityId: board.id,
-    //   entityType: ENTITY_TYPE.BOARD,
-    //   action: ACTION.UPDATE,
-    // })
+    todo = await xata.db.Todo.update(id, { ...values });
+
+    await createAuditLog({
+      entityTitle: todo?.title!,
+      entityId: todo?.id!,
+      entityType: "TODO",
+      action: "UPDATE",
+      boardId: boardId,
+    });
   } catch (error) {
     return {
       error: "Failed to update.",
@@ -47,7 +46,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   }
 
   revalidatePath(`/dashboard/${boardId}`);
-  return { data: JSON.parse(JSON.stringify(list)) };
+  return { data: JSON.parse(JSON.stringify(todo)) };
 };
 
 export const updateTodo = createSafeAction(UpdateTodo, handler);

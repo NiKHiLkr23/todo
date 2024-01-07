@@ -6,6 +6,7 @@ import { InputType, ReturnType } from "./types";
 import { createSafeAction } from "@/lib/create-safe-action";
 import { userAgent } from "next/server";
 import { CreateList } from "./schema";
+import { createAuditLog } from "@/lib/create-audit-log";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId } = auth();
@@ -25,7 +26,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       .filter({
         board: boardId,
       })
-      .sort("title", "desc")
+      .sort("order", "desc")
       .getFirst();
 
     // console.log("lastList", lastList);
@@ -36,6 +37,14 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       title,
       board: boardId,
       order: newOrder,
+    });
+
+    await createAuditLog({
+      entityTitle: list?.title!,
+      entityId: list?.id!,
+      entityType: "LIST",
+      action: "CREATE",
+      boardId: boardId,
     });
   } catch (error) {
     console.log("ERror------------", error);
