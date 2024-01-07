@@ -35,8 +35,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     updatedTodos = await xata.transactions.run(
       JSON.parse(JSON.stringify(transaction))
     );
-
-    // console.log("todos-reorder_______", updatedTodos);
   } catch (error) {
     return {
       error: "Failed to reorder.",

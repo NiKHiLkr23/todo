@@ -39,8 +39,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       .sort("title", "desc")
       .getFirst();
 
-    // console.log("lastList", lastList);
-
     const newOrder = lastTodo ? lastTodo.order! + 1 : 1;
 
     todo = await xataClient.db.Todo.create({

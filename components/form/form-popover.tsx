@@ -41,12 +41,10 @@ export const FormPopover = ({
       toast.success("Board created!");
       closeRef.current?.click();
       router.push(`/dashboard/${data.id}`);
-      // console.log(data);
     },
     onError: (error) => {
       toast.error(error);
       // proModal.onOpen();
-      console.log(error);
     },
   });
 

@@ -29,8 +29,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       .sort("order", "desc")
       .getFirst();
 
-    // console.log("lastList", lastList);
-
     const newOrder = lastList ? lastList.order! + 1 : 1;
 
     list = await xata.db.List.create({
@@ -47,12 +45,10 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       boardId: boardId,
     });
   } catch (error) {
-    console.log("ERror------------", error);
     return {
       error: "Failed to create.",
     };
   }
-  // console.log("new-list created", list);
 
   revalidatePath(`/dashboard/${boardId}`);
   return { data: JSON.parse(JSON.stringify(list)) };

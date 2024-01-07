@@ -28,7 +28,9 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       id: id,
     }).getFirst();
     if (!existingRecord) {
-      console.log("error");
+      return {
+        error: "List not found!",
+      };
     }
     list = await xata.db.List.update(id, { title: title });
 

@@ -26,7 +26,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   try {
     todo = await xataClient.db.Todo.delete(id);
 
-    // console.log("deleted todo", todo);
     await createAuditLog({
       entityTitle: todo?.title!,
       entityId: todo?.id!,

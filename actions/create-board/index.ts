@@ -53,12 +53,10 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       boardId: board.id,
     });
   } catch (error) {
-    console.log("ERror------------", error);
     return {
       error: "Failed to create.",
     };
   }
-  // console.log(board);
 
   revalidatePath(`/dashboard/${board.id}`);
   return { data: JSON.parse(JSON.stringify(board)) };

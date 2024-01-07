@@ -29,7 +29,9 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       id: id,
     }).getFirst();
     if (!existingRecord) {
-      console.log("error");
+      return {
+        error: "Board not found!",
+      };
     }
     board = await xata.db.Board.update(id, { title: title });
 

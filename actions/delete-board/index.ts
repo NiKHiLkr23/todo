@@ -29,43 +29,41 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   const { id } = data;
   const owner = await xata.db.User.search(userId);
   try {
-    // Ensure the item is own by our user
+    // Ensure the Board is owned by our user
     const existingRecord = await xata.db.Board.filter({
       owner: owner.records[0].id,
       id: id,
     }).getFirst();
     if (!existingRecord) {
-      console.log("error");
+      return {
+        error: "Board not found",
+      };
     }
-    try {
-      //get all lists associated with the board
-      const lists = await xata.db.List.filter({
-        board: id,
-      }).getMany();
+    //get all lists associated with the board
+    const lists = await xata.db.List.filter({
+      board: id,
+    }).getMany();
 
-      // await delete all the lists
-      const listPromises = lists.map(async (list) => {
-        await deleteList({
-          id: list.id,
-          boardId: id,
-        });
+    // await delete all the lists
+    const listPromises = lists.map(async (list) => {
+      await deleteList({
+        id: list.id,
+        boardId: id,
       });
+    });
 
-      const deletedLists = await Promise.all(listPromises);
+    const deletedLists = await Promise.all(listPromises);
 
-      //delete board
-      const deletedBoard = await xata.db.Board.delete(id);
+    //delete board
+    const deletedBoard = await xata.db.Board.delete(id);
 
-      await createAuditLog({
-        entityTitle: deletedBoard?.title!,
-        entityId: deletedBoard?.id!,
-        entityType: "BOARD",
-        action: "DELETE",
-        boardId: deletedBoard?.id!,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    await createAuditLog({
+      entityTitle: deletedBoard?.title!,
+      entityId: deletedBoard?.id!,
+      entityType: "BOARD",
+      action: "DELETE",
+      boardId: deletedBoard?.id!,
+    });
   } catch (error) {
     return {
       error: "Failed to create.",

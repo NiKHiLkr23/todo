@@ -35,6 +35,8 @@ export const createAuditLog = async (props: Props) => {
 
     return "success";
   } catch (error) {
-    console.log("[AUDIT_LOG_ERROR]", error);
+    return {
+      error: "[AUDIT_LOG_ERROR]",
+    };
   }
 };

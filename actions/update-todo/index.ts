@@ -28,7 +28,9 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       id: id,
     }).getFirst();
     if (!existingRecord) {
-      console.log("existing record error");
+      return {
+        error: "Todo not found!",
+      };
     }
     todo = await xata.db.Todo.update(id, { ...values });
 

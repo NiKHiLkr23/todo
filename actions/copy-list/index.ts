@@ -51,8 +51,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       list: id,
     }).getMany();
 
-    // console.log("todos to copy - ", todos);
-
     const copiedTodos = await xataClient.db.Todo.create(
       todos.map((item) => {
         return {
@@ -64,8 +62,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         };
       })
     );
-
-    // console.log("Success");
     const auditLogPromises = copiedTodos.map(async (todo) => {
       await createAuditLog({
         entityTitle: todo?.title!,

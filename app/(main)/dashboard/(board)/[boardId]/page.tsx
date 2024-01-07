@@ -42,8 +42,6 @@ const BoardIdPage = async ({ params }: BoardIdPageProps) => {
     // Wait for all todo requests to complete
     const todosResults = await Promise.all(todosPromises);
 
-    // console.log("todosResult", todosResults);
-
     // Combine lists and todos data
     const combinedData = lists.map((listItem, index) => {
       return {
@@ -51,8 +49,6 @@ const BoardIdPage = async ({ params }: BoardIdPageProps) => {
         todos: todosResults ? todosResults[index] : [],
       };
     });
-
-    // console.log("combinedData", combinedData);
 
     return (
       <div className="p-4 z-10 h-full overflow-x-auto">
@@ -63,7 +59,6 @@ const BoardIdPage = async ({ params }: BoardIdPageProps) => {
       </div>
     );
   } catch (error) {
-    console.error("Error fetching lists and todos:", error);
     return (
       <div className="p-4 z-10 h-full overflow-x-auto">
         oops somthing went wrong
