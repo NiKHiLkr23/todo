@@ -12,7 +12,10 @@ const tables = [
     columns: [
       { name: "userId", type: "string", notNull: true, defaultValue: "" },
     ],
-    revLinks: [{ column: "owner", table: "Board" }],
+    revLinks: [
+      { column: "owner", table: "Board" },
+      { column: "owner", table: "Org" },
+    ],
   },
   {
     name: "Todo",
@@ -38,6 +41,7 @@ const tables = [
       { name: "imageUserName", type: "string" },
       { name: "imageLinkHTML", type: "string" },
       { name: "owner", type: "link", link: { table: "User" } },
+      { name: "organization", type: "link", link: { table: "Org" } },
     ],
     revLinks: [{ column: "board", table: "List" }],
   },
@@ -62,6 +66,26 @@ const tables = [
       { name: "userId", type: "string" },
       { name: "userImage", type: "string" },
       { name: "userName", type: "string" },
+      { name: "orgId", type: "string" },
+    ],
+  },
+  {
+    name: "Org",
+    columns: [
+      { name: "orgId", type: "string", notNull: true, defaultValue: "" },
+      { name: "count", type: "int" },
+      { name: "owner", type: "link", link: { table: "User" } },
+    ],
+    revLinks: [{ column: "organization", table: "Board" }],
+  },
+  {
+    name: "OrgSubscription",
+    columns: [
+      { name: "orgId", type: "string" },
+      { name: "stripeCustomerId", type: "string" },
+      { name: "stripeSubscriptionId", type: "string" },
+      { name: "stripePriceId", type: "string" },
+      { name: "stripeCurrentPeriodEnd", type: "datetime" },
     ],
   },
 ] as const;
@@ -84,12 +108,20 @@ export type ListRecord = List & XataRecord;
 export type AuditLog = InferredTypes["AuditLog"];
 export type AuditLogRecord = AuditLog & XataRecord;
 
+export type Org = InferredTypes["Org"];
+export type OrgRecord = Org & XataRecord;
+
+export type OrgSubscription = InferredTypes["OrgSubscription"];
+export type OrgSubscriptionRecord = OrgSubscription & XataRecord;
+
 export type DatabaseSchema = {
   User: UserRecord;
   Todo: TodoRecord;
   Board: BoardRecord;
   List: ListRecord;
   AuditLog: AuditLogRecord;
+  Org: OrgRecord;
+  OrgSubscription: OrgSubscriptionRecord;
 };
 
 const DatabaseClient = buildClient();

@@ -93,6 +93,60 @@
                     "link": {
                         "table": "User"
                     }
+                },
+                {
+                    "name": "organization",
+                    "type": "link",
+                    "link": {
+                        "table": "Org"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Org",
+            "columns": [
+                {
+                    "name": "orgId",
+                    "type": "string",
+                    "notNull": true,
+                    "defaultValue": ""
+                },
+                {
+                    "name": "count",
+                    "type": "int"
+                },
+                {
+                    "name": "owner",
+                    "type": "link",
+                    "link": {
+                        "table": "User"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "OrgSubscription",
+            "columns": [
+                {
+                    "name": "orgId",
+                    "type": "string"
+                },
+                {
+                    "name": "stripeCustomerId",
+                    "type": "string"
+                },
+                {
+                    "name": "stripeSubscriptionId",
+                    "type": "string"
+                },
+                {
+                    "name": "stripePriceId",
+                    "type": "string"
+                },
+                {
+                    "name": "stripeCurrentPeriodEnd",
+                    "type": "datetime"
                 }
             ]
         },
@@ -116,6 +170,10 @@
                 },
                 {
                     "name": "boardId",
+                    "type": "string"
+                },
+                {
+                    "name": "orgId",
                     "type": "string"
                 },
                 {

@@ -11,10 +11,10 @@ import { DeleteTodo } from "./schema";
 import { createAuditLog } from "@/lib/create-audit-log";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
-  const { userId } = auth();
-
   const xataClient = getXataClient();
-  if (!userId) {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
     return {
       error: "Unauthorized",
     };
@@ -32,6 +32,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       entityType: "TODO",
       action: "DELETE",
       boardId: boardId,
+      orgId: orgId,
     });
   } catch (error) {
     return {

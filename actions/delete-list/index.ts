@@ -13,10 +13,10 @@ import { XataApiClient } from "@xata.io/client";
 import { todo } from "node:test";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
-  const { userId } = auth();
-
   const xataClient = getXataClient();
-  if (!userId) {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
     return {
       error: "Unauthorized",
     };
@@ -45,6 +45,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         entityType: "TODO",
         action: "DELETE",
         boardId: boardId,
+        orgId: orgId,
       });
     });
 
@@ -56,6 +57,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         entityType: "LIST",
         action: "DELETE",
         boardId: boardId,
+        orgId: orgId,
       }),
     ]);
   } catch (error) {

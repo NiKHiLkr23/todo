@@ -10,14 +10,15 @@ import { InputType, ReturnType } from "./types";
 import { getXataClient } from "@/lib/utils/xata";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
-  const { userId } = auth();
   const xata = getXataClient();
+  const { userId, orgId } = auth();
 
-  if (!userId) {
+  if (!userId || !orgId) {
     return {
       error: "Unauthorized",
     };
   }
+
   const { items, boardId } = data;
   let lists;
 

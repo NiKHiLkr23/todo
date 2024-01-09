@@ -9,6 +9,8 @@ import { redirect } from "next/navigation";
 import { DeleteBoard } from "./schema";
 import { deleteList } from "../delete-list";
 import { createAuditLog } from "@/lib/create-audit-log";
+import { checkSubscription } from "@/lib/subscription";
+import { decreaseAvailableCount } from "@/lib/org-limit";
 
 export type State = {
   errors?: {
@@ -18,13 +20,16 @@ export type State = {
 };
 
 const handler = async (data: InputType): Promise<ReturnType> => {
-  const { userId } = auth();
   const xata = getXataClient();
-  if (!userId) {
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
     return {
       error: "Unauthorized",
     };
   }
+
+  const isPro = await checkSubscription();
 
   const { id } = data;
   const owner = await xata.db.User.search(userId);
@@ -57,12 +62,17 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     //delete board
     const deletedBoard = await xata.db.Board.delete(id);
 
+    if (!isPro) {
+      await decreaseAvailableCount();
+    }
+
     await createAuditLog({
       entityTitle: deletedBoard?.title!,
       entityId: deletedBoard?.id!,
       entityType: "BOARD",
       action: "DELETE",
       boardId: deletedBoard?.id!,
+      orgId: orgId,
     });
   } catch (error) {
     return {

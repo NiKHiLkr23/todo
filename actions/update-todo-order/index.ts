@@ -10,10 +10,10 @@ import { getXataClient } from "@/lib/utils/xata";
 import { UpdateTodoOrder } from "./schema";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
-  const { userId } = auth();
+  const { userId, orgId } = auth();
   const xata = getXataClient();
 
-  if (!userId) {
+  if (!userId || !orgId) {
     return {
       error: "Unauthorized",
     };

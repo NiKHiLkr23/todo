@@ -9,20 +9,20 @@ import { CreateList } from "./schema";
 import { createAuditLog } from "@/lib/create-audit-log";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
-  const { userId } = auth();
-  const xata = getXataClient();
-  if (!userId) {
+  const xataClient = getXataClient();
+  const { userId, orgId } = auth();
+
+  if (!userId || !orgId) {
     return {
       error: "Unauthorized",
     };
   }
-
   const { title, boardId } = data;
 
   let list;
 
   try {
-    const lastList = await xata.db.List.select(["order", "title"])
+    const lastList = await xataClient.db.List.select(["order", "title"])
       .filter({
         board: boardId,
       })
@@ -31,7 +31,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
     const newOrder = lastList ? lastList.order! + 1 : 1;
 
-    list = await xata.db.List.create({
+    list = await xataClient.db.List.create({
       title,
       board: boardId,
       order: newOrder,
@@ -43,6 +43,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       entityType: "LIST",
       action: "CREATE",
       boardId: boardId,
+      orgId: orgId,
     });
   } catch (error) {
     return {

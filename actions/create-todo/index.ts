@@ -10,10 +10,10 @@ import { getXataClient } from "@/lib/utils/xata";
 import { createAuditLog } from "@/lib/create-audit-log";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
-  const { userId } = auth();
   const xataClient = getXataClient();
+  const { userId, orgId } = auth();
 
-  if (!userId) {
+  if (!userId || !orgId) {
     return {
       error: "Unauthorized",
     };
@@ -53,6 +53,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       entityType: "TODO",
       action: "CREATE",
       boardId: boardId,
+      orgId: orgId,
     });
   } catch (error) {
     return {

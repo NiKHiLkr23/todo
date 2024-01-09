@@ -8,6 +8,7 @@ interface Props {
   entityTitle: string;
   action: keyof ACTION;
   boardId: string;
+  orgId: string;
 }
 
 export const createAuditLog = async (props: Props) => {

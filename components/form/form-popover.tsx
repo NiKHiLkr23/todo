@@ -18,6 +18,7 @@ import { FormSubmit } from "./form-submit";
 import { FormPicker } from "./form-picker";
 import { useAction } from "@/lib/hooks/use-action";
 import { createBoard } from "@/actions/create-board";
+import { useProModal } from "@/lib/hooks/use-pro-modal";
 
 interface FormPopoverProps {
   children: React.ReactNode;
@@ -32,7 +33,7 @@ export const FormPopover = ({
   align,
   sideOffset = 0,
 }: FormPopoverProps) => {
-  // const proModal = useProModal();
+  const proModal = useProModal();
   const router = useRouter();
   const closeRef = useRef<ElementRef<"button">>(null);
 
@@ -44,7 +45,7 @@ export const FormPopover = ({
     },
     onError: (error) => {
       toast.error(error);
-      // proModal.onOpen();
+      proModal.onOpen();
     },
   });
 
