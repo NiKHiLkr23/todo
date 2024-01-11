@@ -19,6 +19,7 @@ export const BoardList = async () => {
     return redirect("/select-org");
   }
   const owner = await xataClient.db.User.search(`${userId}`);
+
   const boards = await xataClient.db.Board.filter({
     owner: JSON.parse(JSON.stringify(owner.records[0].id)),
     "organization.orgId": orgId,
@@ -39,8 +40,8 @@ export const BoardList = async () => {
         {boards.map((board) => (
           <Link
             key={board.id}
-            href={`/board/${board.id}`}
-            className="group relative aspect-video bg-no-repeat bg-center bg-cover bg-sky-700 rounded-sm h-full w-full p-2 overflow-hidden"
+            href={`/dashboard/${board.id}`}
+            className="group relative aspect-video bg-no-repeat shadow-md active:scale-95 bg-center bg-cover bg-sky-700 rounded-sm h-full w-full p-2 overflow-hidden"
             style={{ backgroundImage: `url(${board.imageThumbUrl})` }}
           >
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
@@ -50,7 +51,7 @@ export const BoardList = async () => {
         <FormPopover sideOffset={10} side="right">
           <div
             role="button"
-            className="aspect-video relative h-full w-full bg-muted rounded-sm flex flex-col gap-y-1 items-center justify-center hover:opacity-75 transition"
+            className="aspect-video relative h-full w-full bg-muted rounded-sm flex flex-col gap-y-1 items-center justify-center hover:opacity-75 transition shadow-md active:scale-95"
           >
             <p className="text-sm">Create new board</p>
             <span className="text-xs">

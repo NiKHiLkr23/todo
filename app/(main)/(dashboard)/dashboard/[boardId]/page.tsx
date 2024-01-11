@@ -1,7 +1,6 @@
 import { auth } from "@clerk/nextjs";
 import { ListContainer } from "./_components/list-container";
 import { getXataClient } from "@/lib/utils/xata";
-import axios from "axios";
 
 interface BoardIdPageProps {
   params: {
