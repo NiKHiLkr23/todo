@@ -67,7 +67,7 @@ export const Sidebar = ({ storageKey = "t-sidebar-state" }: SidebarProps) => {
   return (
     <>
       <div className="font-medium text-xs flex items-center mb-1">
-        <span className="pl-4">Workspaces</span>
+        <span className="pl-4 text-lg">Workspaces</span>
         <Button
           asChild
           type="button"

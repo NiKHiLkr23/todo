@@ -2,16 +2,15 @@
 
 import useScroll from "@/lib/hooks/use-scroll";
 import { OrganizationSwitcher, SignedIn, UserButton } from "@clerk/nextjs";
-import Image from "next/image";
 import Link from "next/link";
 import { MobileSidebar } from "./mobile-sidebar";
-import { FormPopover } from "@/components/form/form-popover";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+
 import { ThemeToggleButton } from "@/components/layout/theme-toggler";
+import { usePathname } from "next/navigation";
 
 export default function NavBar() {
   const scrolled = useScroll(50);
+  const pathname = usePathname();
 
   return (
     <>
@@ -20,9 +19,11 @@ export default function NavBar() {
           scrolled
             ? "border-b border-gray-200 bg-white/50 backdrop-blur-xl"
             : "bg-white/0"
-        } z-50 transition-all`}
+        } z-50 transition-all
+        ${pathname.startsWith("/dashboard") ? "bg-black/70" : ""}
+        `}
       >
-        <div className="mx-5 flex h-16 max-w-screen-xl items-center justify-between w-full">
+        <div className="mr-5 flex h-16 max-w-screen-xl items-center justify-between w-full">
           <MobileSidebar />
           <Link href="/" className="flex items-center font-display text-2xl">
             <span
@@ -33,8 +34,8 @@ export default function NavBar() {
             </span>
           </Link>
 
-          <div className="ml-auto flex items-center gap-x-2">
-            <div className="flex items-center gap-2 ">
+          <div className="ml-auto flex items-center gap-x-2 ">
+            <div className="hidden md:flex items-center gap-2 dark:text-white  ">
               <OrganizationSwitcher
                 hidePersonal
                 afterCreateOrganizationUrl="/organization/:id"

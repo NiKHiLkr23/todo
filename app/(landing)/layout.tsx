@@ -9,7 +9,9 @@ export default function LandingLayout({
 }) {
   return (
     <>
-      <div className="fixed h-screen w-full bg-gradient-to-br from-indigo-50 via-white to-cyan-100" />
+      <div className=" fixed h-screen w-full bg-gradient-to-br from-indigo-50 via-white to-cyan-100  dark:from-indigo-900 dark:via-gray-800 dark:to-cyan-700">
+        <div className="absolute  inset-0 dark:bg-black dark:opacity-50"></div>
+      </div>
       <Suspense fallback="...">
         <NavBar />{" "}
       </Suspense>

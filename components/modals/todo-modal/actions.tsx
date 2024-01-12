@@ -71,7 +71,7 @@ export const Actions = ({ data }: ActionsProps) => {
         onClick={onCopy}
         disabled={isLoadingCopy}
         variant="gray"
-        className="w-full justify-start"
+        className="w-full justify-start dark:text-gray-800 "
         size="inline"
       >
         <Copy className="h-4 w-4 mr-2" />
@@ -81,7 +81,7 @@ export const Actions = ({ data }: ActionsProps) => {
         onClick={onDelete}
         disabled={isLoadingDelete}
         variant="gray"
-        className="w-full justify-start"
+        className="w-full justify-start dark:text-gray-800 "
         size="inline"
       >
         <Trash className="h-4 w-4 mr-2" />

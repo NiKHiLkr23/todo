@@ -1,5 +1,6 @@
 "use client";
 
+import { ThemeToggleButton } from "@/components/layout/theme-toggler";
 import useScroll from "@/lib/hooks/use-scroll";
 import Link from "next/link";
 
@@ -11,7 +12,7 @@ export default function NavBar() {
       <div
         className={`fixed top-0 w-full flex justify-center ${
           scrolled
-            ? "border-b border-gray-200 bg-white/50 backdrop-blur-xl"
+            ? "border-b border-gray-200 bg-white/50 dark:bg-black/30 dark:border-gray-900 backdrop-blur-xl"
             : "bg-white/0"
         } z-30 transition-all`}
       >
@@ -24,13 +25,17 @@ export default function NavBar() {
               Todo
             </span>
           </Link>
-          <Link
-            href="/sign-in"
-            prefetch={false}
-            className="rounded-full border border-black bg-black p-1.5 px-4 text-sm text-white transition-all hover:bg-white hover:text-black"
-          >
-            Sign In
-          </Link>
+          <div className="flex items-center gap-3 ">
+            <ThemeToggleButton />
+
+            <Link
+              href="/sign-in"
+              prefetch={false}
+              className="rounded-full border border-black bg-black p-1.5 md:py-1  px-4 text-sm md:text-base text-white transition-all hover:bg-white hover:text-black dark:bg-white dark:text-black"
+            >
+              Sign In
+            </Link>
+          </div>
         </div>
       </div>
     </>

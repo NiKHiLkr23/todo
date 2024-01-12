@@ -43,6 +43,7 @@ export const FormPopover = ({
       closeRef.current?.click();
       router.push(`/dashboard/${data.id}`);
     },
+
     onError: (error) => {
       toast.error(error);
       proModal.onOpen();

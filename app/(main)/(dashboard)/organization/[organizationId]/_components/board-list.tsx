@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { HelpCircle, User2 } from "lucide-react";
+import { HelpCircle, PencilRuler, User2 } from "lucide-react";
 
 import { Hint } from "@/components/hint";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -32,7 +32,7 @@ export const BoardList = async () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center font-semibold text-lg text-neutral-700">
+      <div className="flex items-center font-semibold text-lg text-neutral-700 dark:text-gray-400">
         <User2 className="h-6 w-6 mr-2" />
         Your boards
       </div>
@@ -45,7 +45,9 @@ export const BoardList = async () => {
             style={{ backgroundImage: `url(${board.imageThumbUrl})` }}
           >
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
-            <p className="relative font-semibold text-white">{board.title}</p>
+            <p className="relative font-semibold text-white text-lg">
+              {board.title}
+            </p>
           </Link>
         ))}
         <FormPopover sideOffset={10} side="right">
@@ -53,6 +55,7 @@ export const BoardList = async () => {
             role="button"
             className="aspect-video relative h-full w-full bg-muted rounded-sm flex flex-col gap-y-1 items-center justify-center hover:opacity-75 transition shadow-md active:scale-95"
           >
+            <PencilRuler size={32} />
             <p className="text-sm">Create new board</p>
             <span className="text-xs">
               {isPro
