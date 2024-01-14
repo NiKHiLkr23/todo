@@ -1,5 +1,4 @@
 import Card from "@/components/shared/card";
-import ComponentGrid from "@/components/shared/component-grid";
 import WebVitals from "@/components/shared/web-vitals";
 import { nFormatter } from "@/lib/utils";
 import { Github, Twitter } from "lucide-react";
