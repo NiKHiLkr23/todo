@@ -67,7 +67,7 @@ const BoardIdLayout = async ({
           backgroundColor: "rgba(0, 0, 0, 0.5)", // Set background color to black with 60% opacity
         }}
       />
-      <div className="relative w-full max-w-7xl mx-auto mb-3">
+      <div className="relative w-full max-w-7xl mx-auto mb-3 ">
         <BoardNavbar data={JSON.parse(JSON.stringify(board))} />
       </div>
 

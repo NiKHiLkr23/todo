@@ -50,28 +50,54 @@ export const BoardList = async () => {
             </p>
           </Link>
         ))}
-        <FormPopover sideOffset={10} side="right">
-          <div
-            role="button"
-            className="aspect-video relative h-full w-full bg-muted rounded-sm flex flex-col gap-y-1 items-center justify-center hover:opacity-75 transition shadow-md active:scale-95"
-          >
-            <PencilRuler size={32} />
-            <p className="text-sm">Create new board</p>
-            <span className="text-xs">
-              {isPro
-                ? "Unlimited"
-                : `${MAX_FREE_BOARDS - availableCount!} remaining`}
-            </span>
-            <Hint
-              sideOffset={40}
-              description={`
+        <div className="hidden md:block">
+          <FormPopover sideOffset={10} side="right" align="start">
+            <div
+              role="button"
+              className="aspect-video relative h-full w-full bg-muted rounded-sm flex flex-col gap-y-1 items-center justify-center hover:opacity-75 transition shadow-md active:scale-95"
+            >
+              <PencilRuler size={32} />
+              <p className="text-sm">Create new board</p>
+              <span className="text-xs">
+                {isPro
+                  ? "Unlimited"
+                  : `${MAX_FREE_BOARDS - availableCount!} remaining`}
+              </span>
+              <Hint
+                sideOffset={40}
+                description={`
                 Free Workspaces can have up to 5 open boards. For unlimited boards upgrade this workspace.
               `}
+              >
+                <HelpCircle className="absolute bottom-2 right-2 h-[14px] w-[14px]" />
+              </Hint>
+            </div>
+          </FormPopover>
+        </div>
+        <div className="md:hidden">
+          <FormPopover sideOffset={10} side="bottom" align="end">
+            <div
+              role="button"
+              className="aspect-video relative h-full w-full bg-muted rounded-sm flex flex-col gap-y-1 items-center justify-center hover:opacity-75 transition shadow-md active:scale-95"
             >
-              <HelpCircle className="absolute bottom-2 right-2 h-[14px] w-[14px]" />
-            </Hint>
-          </div>
-        </FormPopover>
+              <PencilRuler size={32} />
+              <p className="text-sm">Create new board</p>
+              <span className="text-xs">
+                {isPro
+                  ? "Unlimited"
+                  : `${MAX_FREE_BOARDS - availableCount!} remaining`}
+              </span>
+              <Hint
+                sideOffset={40}
+                description={`
+                Free Workspaces can have up to 5 open boards. For unlimited boards upgrade this workspace.
+              `}
+              >
+                <HelpCircle className="absolute bottom-2 right-2 h-[14px] w-[14px]" />
+              </Hint>
+            </div>
+          </FormPopover>
+        </div>
       </div>
     </div>
   );
