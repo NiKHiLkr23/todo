@@ -21,7 +21,7 @@ export const createAuditLog = async (props: Props) => {
       throw new Error("User not found!");
     }
 
-    const { entityId, entityType, entityTitle, action, boardId } = props;
+    const { entityId, entityType, entityTitle, action, boardId, orgId } = props;
 
     await xataClient.db.AuditLog.create({
       action: `${action}`,
@@ -32,6 +32,7 @@ export const createAuditLog = async (props: Props) => {
       userId: user.id,
       userImage: user?.imageUrl,
       userName: user?.firstName + " " + user?.lastName,
+      orgId: orgId,
     });
 
     return "success";

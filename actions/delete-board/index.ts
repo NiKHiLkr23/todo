@@ -80,8 +80,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     };
   }
 
-  revalidatePath(`/dashboard}`);
-  redirect(`/dashboard`);
+  revalidatePath(`/organization/${orgId}}`);
+  redirect(`/organization/${orgId}`);
 };
 
 export const deleteBoard = createSafeAction(DeleteBoard, handler);
