@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FormPopover } from "@/components/form/form-popover";
 import { MAX_FREE_BOARDS } from "@/constants/boards";
 import { getAvailableCount } from "@/lib/org-limit";
-import { getXataClient } from "@/lib/utils/xata";
+import { Board, getXataClient } from "@/lib/utils/xata";
 import { checkSubscription } from "@/lib/subscription";
 
 export const BoardList = async () => {
@@ -20,12 +20,18 @@ export const BoardList = async () => {
   }
   const owner = await xataClient.db.User.search(`${userId}`);
 
-  const boards = await xataClient.db.Board.filter({
-    owner: JSON.parse(JSON.stringify(owner.records[0].id)),
-    "organization.orgId": orgId,
-  })
-    .sort("xata.createdAt", "desc")
-    .getMany();
+  let boards;
+
+  try {
+    boards = await xataClient.db.Board.filter({
+      owner: JSON.parse(JSON.stringify(owner.records[0].id)),
+      "organization.orgId": orgId,
+    })
+      .sort("xata.createdAt", "desc")
+      .getMany();
+  } catch (error) {
+    console.log(error);
+  }
 
   const availableCount = await getAvailableCount();
   const isPro = await checkSubscription();
@@ -37,19 +43,20 @@ export const BoardList = async () => {
         Your boards
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {boards.map((board) => (
-          <Link
-            key={board.id}
-            href={`/dashboard/${board.id}`}
-            className="group relative aspect-video bg-no-repeat shadow-md active:scale-95 bg-center bg-cover bg-sky-700 rounded-sm h-full w-full p-2 overflow-hidden"
-            style={{ backgroundImage: `url(${board.imageThumbUrl})` }}
-          >
-            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
-            <p className="relative font-semibold text-white text-lg">
-              {board.title}
-            </p>
-          </Link>
-        ))}
+        {boards &&
+          boards.map((board) => (
+            <Link
+              key={board.id}
+              href={`/dashboard/${board.id}`}
+              className="group relative aspect-video bg-no-repeat shadow-md active:scale-95 bg-center bg-cover bg-sky-700 rounded-sm h-full w-full p-2 overflow-hidden"
+              style={{ backgroundImage: `url(${board.imageThumbUrl})` }}
+            >
+              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
+              <p className="relative font-semibold text-white text-lg">
+                {board.title}
+              </p>
+            </Link>
+          ))}
         <div className="hidden md:block">
           <FormPopover sideOffset={10} side="right" align="start">
             <div

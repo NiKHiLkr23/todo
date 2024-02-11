@@ -5,23 +5,9 @@ import { Separator } from "@/components/ui/separator";
 import { Info } from "./_components/info";
 import { BoardList } from "./_components/board-list";
 import { checkSubscription } from "@/lib/subscription";
-import { getXataClient } from "@/lib/utils/xata";
-import { auth } from "@clerk/nextjs";
 
 const OrganizationIdPage = async () => {
   const isPro = await checkSubscription();
-  const xataClient = getXataClient();
-  const { userId, orgId } = auth();
-
-  if (userId) {
-    const checkUser = await xataClient.db.User.search(userId);
-    const checkOrg = await xataClient.db.Org.search(orgId!);
-    if (checkUser.totalCount === 0 && checkOrg.totalCount === 0) {
-      const newUser = await xataClient.db.User.create({ userId });
-
-      await xataClient.db.Org.create({ orgId, owner: newUser.id });
-    }
-  }
 
   return (
     <div className="w-full mb-20">

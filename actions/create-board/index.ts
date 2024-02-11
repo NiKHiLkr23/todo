@@ -50,6 +50,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   try {
     const owner = await xata.db.User.search(userId);
     const org = await xata.db.Org.search(orgId);
+
     board = await xata.db.Board.create({
       title,
       owner: owner.records[0].id,
@@ -63,7 +64,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     if (!isPro) {
       await incrementAvailableCount();
     }
-
     await createAuditLog({
       entityId: board.id,
       entityTitle: board.title,
@@ -73,7 +73,6 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       orgId: orgId,
     });
   } catch (error) {
-    console.log(error);
     return {
       error: "Failed to create.",
     };
